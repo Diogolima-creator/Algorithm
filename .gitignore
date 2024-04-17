@@ -4,3 +4,7 @@
 .venv
 idea
 venv
+.gitignore
+gitignore
+idea
+/idea
