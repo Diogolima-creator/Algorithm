@@ -236,7 +236,7 @@ def genetico2(funcao_custo, tamanho_populacao=150, probabilidade_mutacao=0.8,
    return custos[0][1]
        
 def genetico3(funcao_custo, tamanho_populacao=500, probabilidade_mutacao=0.8,
-             elitismo=0.2,numero_geracoes= 1000):
+             elitismo=0.2,numero_geracoes= 6000):
    populacao = []
 
    for i in range(tamanho_populacao):
@@ -246,6 +246,7 @@ def genetico3(funcao_custo, tamanho_populacao=500, probabilidade_mutacao=0.8,
    numero_elitismo = int(elitismo * tamanho_populacao)
    
    for i in range(numero_geracoes):
+      print('Geracão numero', i)
       custos = [(funcao_custo(individuo), individuo) for individuo in populacao]
       custos.sort()
       individuos_ordenados = [individuo for (custo, individuo) in custos]
@@ -326,8 +327,15 @@ if menorGen3 < menor2:
 
 '''
 
-solucao = genetico(funcao_custo)
+solucao = genetico3(funcao_custo)
 fc2 = funcao_custo(solucao)
+
+nome_arquivo = "dados.txt"
+
+# Abre o arquivo em modo de escrita ('w' significa write)
+with open(nome_arquivo, 'w') as arquivo:
+    # Escreve os dados no arquivo
+    arquivo.write(solucao)
+
 print(solucao)
 print(fc2)
-imprimir_quartos(solucao)
