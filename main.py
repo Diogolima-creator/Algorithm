@@ -120,32 +120,22 @@ def troca_aleatoria(array1, array2):
     return aux
 
 def mutacao_room(solucao):
-  mutante = solucao.copy()          
-  i = random.randint(0, len(mutante)-1)
-  j = random.randint(0, len(mutante)-1)
+    i = random.randint(0, len(solucao) // 2 - 1) * 2
+    j = random.randint(0, len(solucao) // 2 - 1) * 2
 
-  while i % 2 != 0 or j % 2 != 0:
-    i = random.randint(0, len(mutante)-1)
-    j = random.randint(0, len(mutante)-1)
-
-  if (i != j) :
-     aux = mutante[j]
-     mutante[j] = mutante[i] 
-     mutante[i] = aux
-     return mutante
-  return mutante
+    solucao[i], solucao[j] = solucao[j], solucao[i]
+    
+    return solucao
 
 def mutacao_guests(solucao):
-  mutante = solucao.copy()          
-  index = random.choice([x for x in range(len(rooms)-1) if x % 2 == 0])
-  array_in_mutante = []
-  id_sol = 0
-  for i in range(len(solucao) // 2):
-     if(solucao[id_sol] == index):
-        array_in_mutante.append(id_sol+1)
-     id_sol += 2
-  mutante = troca_aleatoria(mutante, array_in_mutante)
-  return mutante
+    index = random.randint(0, len(rooms) // 2 - 1) * 2
+    array_in_mutante = [i+1 for i, val in enumerate(solucao) if val == index]
+    random.shuffle(array_in_mutante)
+    
+    for i in range(len(array_in_mutante)):
+        solucao[array_in_mutante[i]-1], solucao[index] = solucao[index], solucao[array_in_mutante[i]-1]
+
+    return solucao
 
 def revert_tupla(solucao):
    array = []
@@ -156,24 +146,15 @@ def revert_tupla(solucao):
       array.append(solucao[id_array][1])
       id_array += 1
    return array
-   
+
 def cruzamento(solucao1, solucao2):
+    index = random.randint(1, len(solucao1) // 2 - 1) * 2
 
-   solucao1_tuplas = [(solucao1[i], solucao1[i+1]) for i in range(0, len(solucao1), 2)]
-   solucao2_tuplas = [(solucao2[i], solucao2[i+1]) for i in range(0, len(solucao2), 2)]
-   index = random.randint(1, (len(solucao1)//2) - 1)
-   for i in range(0, (len(solucao1_tuplas)-index)):
-      change = 0
-      for j in range(0, len(solucao1_tuplas)):
-         if solucao2_tuplas[i] == solucao1_tuplas[j]:
-            change = 0
-            break
-         else:
-            change = 1
-
-      if change == 1:
-         solucao1_tuplas[index+i] = solucao2_tuplas[i]
-   return revert_tupla(solucao1_tuplas)
+    for i in range(index, len(solucao1), 2):
+        if solucao1[i:i+2] not in solucao2:
+            solucao1[i:i+2] = solucao2[i:i+2]
+            
+    return solucao1
 
 def genetico(funcao_custo, tamanho_populacao=1000, probabilidade_mutacao=0.8,
              elitismo=0.15,numero_geracoes=3000):
@@ -236,7 +217,7 @@ def genetico2(funcao_custo, tamanho_populacao=150, probabilidade_mutacao=0.8,
    return custos[0][1]
        
 def genetico3(funcao_custo, tamanho_populacao=500, probabilidade_mutacao=0.8,
-             elitismo=0.2,numero_geracoes= 6000):
+             elitismo=0.2,numero_geracoes= 10):
    populacao = []
 
    for i in range(tamanho_populacao):
@@ -332,10 +313,17 @@ fc2 = funcao_custo(solucao)
 
 nome_arquivo = "dados.txt"
 
+# Convertendo os valores para strings
+fc2_str = str(fc2)
+solucao_str = ' '.join(map(str, solucao))  # Convertendo a lista em uma única string
+
+# Criando a lista de strings para escrever no arquivo
+arrayTxt = [fc2_str, solucao_str]
+
 # Abre o arquivo em modo de escrita ('w' significa write)
 with open(nome_arquivo, 'w') as arquivo:
     # Escreve os dados no arquivo
-    arquivo.write(solucao)
+    arquivo.write('\n'.join(arrayTxt))
 
-print(solucao)
-print(fc2)
+print("Solução:", solucao)
+print("Custo da solução:", fc2)
