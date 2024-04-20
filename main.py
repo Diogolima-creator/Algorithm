@@ -69,8 +69,7 @@ def funcao_custo(solucao):
 def allocate_guests(rooms, guests):
     allocation = []  # Lista para armazenar a alocação de convidados
     room_count = {room: 0 for room in rooms}  # Dicionário para acompanhar quantos convidados foram alocados em cada quarto
-
-    for guest_index, (_, _, _) in enumerate(guests):
+    for guest_index, (_, _, _, _, _) in enumerate(guests):
         room = random.choice(list(rooms.keys()))  # Escolhe um quarto aleatório
 
         if room_count[room] < len(rooms[room]):  # Verifica se o quarto não excedeu sua capacidade
